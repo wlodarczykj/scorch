@@ -1,101 +1,95 @@
 <template>
     <div>
-        <div class="alert alert-success success-notification" id='success-armor-msg'>
-            <strong>Success Armor Added!</strong>
-        </div>
-        <div class="alert alert-danger failure-notification" id="failure-armor-msg">
-            <strong>Error creating Armor!</strong>
-        </div>
         <div class="dm-armor-creator border border-dark">
             <h4> Armor </h4>
             <div class="armor-form">
-                <form v-on:submit="create">
-                    <div class="form-group">
-                        <label for="name">Name : </label>
-                        <input type="text" class="form-control" id="name" v-model="name" placeholder="Name" autocomplete="off" required="true"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="description">Description : </label>
-                        <textarea class="form-control" rows="4" id="description" v-model="description" placeholder="Description" autocomplete="off" required="true"/>
+                <div class="form-group">
+                    <label for="name">Name : </label>
+                    <input type="text" class="form-control" id="name" v-model="name" placeholder="Name" autocomplete="off" required="true"/>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description : </label>
+                    <textarea class="form-control" rows="4" id="description" v-model="description" placeholder="Description" autocomplete="off" required="true"/>
+                </div>
+                <div class="form-group numeric-entry">
+                    <label for="item-type">Item Type : </label>
+                    <input type="text" class="form-control" id="item-type" v-model="itemType" placeholder="Item Type" autocomplete="off" required="true"/>
+                </div>
+                <div class="d-flex">
+                    <div class="form-group numeric-entry">
+                        <label for="armor-class">Armor (AC) : </label>
+                        <input type="text" class="form-control" id="armor-class" v-model="armorClass" placeholder="Damage" autocomplete="off" required="true"/>
                     </div>
                     <div class="form-group numeric-entry">
-                        <label for="item-type">Item Type : </label>
-                        <input type="text" class="form-control" id="item-type" v-model="itemType" placeholder="Item Type" autocomplete="off" required="true"/>
+                        <div>
+                            <label for="slot">Slot : </label>
+                        </div>
+                        <select class="form-control" v-model="slot">
+                            <option>Chest</option>
+                            <option>Bracer</option>
+                            <option>Shoulders</option>
+                            <option>Leggings</option>
+                            <option>Boots</option>
+                            <option>Helm</option>
+                            <option>Gloves</option>
+                        </select>
                     </div>
-                    <div class="d-flex">
-                        <div class="form-group numeric-entry">
-                            <label for="armor-class">Armor (AC) : </label>
-                            <input type="text" class="form-control" id="armor-class" v-model="armorClass" placeholder="Damage" autocomplete="off" required="true"/>
-                        </div>
-                        <div class="form-group numeric-entry">
-                            <div>
-                                <label for="slot">Slot : </label>
-                            </div>
-                            <select class="form-control" v-model="slot">
-                                <option>Chest</option>
-                                <option>Bracer</option>
-                                <option>Shoulders</option>
-                                <option>Leggings</option>
-                                <option>Boots</option>
-                                <option>Helm</option>
-                                <option>Gloves</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="d-flex">
-                        <div class="form-group numeric-entry">
-                            <label for="weight">Weight : </label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="weight" v-model="weight" placeholder="Weight" autocomplete="off" required="true"/>
-                                <span class="input-group-addon">lbs</span>
-                            </div>
-                        </div>
-                        <div class="form-group numeric-entry">
-                            <label for="cost">Cost : </label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" id="cost" v-model="cost" placeholder="Cost in gp" autocomplete="off" required="true"/>
-                                <span class="input-group-addon">gp</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="properties">
-                        <label class="property-label">Properties</label>
-                        <div class="property-holder">
-                            <div class="property-list-items" v-for="(prop, index) in properties" :key="index">
-                                <span class="badge-small badge-pill badge-secondary">{{prop}}</span>
-                            </div>
-                        </div>
+                </div>
+                <div class="d-flex">
+                    <div class="form-group numeric-entry">
+                        <label for="weight">Weight : </label>
                         <div class="input-group">
-                            <button class="btn btn-primary" type="button" v-on:click="addProp()"><b>+</b></button>
-                            <button class="btn btn-danger" type="button" v-on:click="removeProp()"><b>-</b></button>
-                            <input type="text" class="form-control" id="property-input" v-model="newProp" placeholder="Properties" autocomplete="off"/>
+                            <input type="text" class="form-control" id="weight" v-model="weight" placeholder="Weight" autocomplete="off" required="true"/>
+                            <span class="input-group-addon">lbs</span>
                         </div>
                     </div>
-                    <div class="stat-modifiers">
-                        <label class="stat-modifiers-label">Stat Modifiers</label>
-                        <div class="stat-modifiers-holder">
-                            <div class="stat-modifiers-list-items" v-for="(smod, index) in statModifiers" :key="index">
-                                <span class="badge-small badge-pill badge-secondary">{{(smod.value > 0 ? "+" : "") + smod.value + " " + smod.mod}}</span>
-                            </div>
-                        </div>
+                    <div class="form-group numeric-entry">
+                        <label for="cost">Cost : </label>
                         <div class="input-group">
-                            <button class="btn btn-primary " type="button" v-on:click="addStatMod()"><b>+</b></button>
-                            <button class="btn btn-danger" type="button" v-on:click="removeStatMod()"><b>-</b></button>
-                            <input type="number" class="form-control" id="stat-mod-input" v-model="newStatModAmount" placeholder="Stat Modifier" autocomplete="off"/>
-                            <select class="form-control" v-model="newStatModStat">
-                                <option>Strength</option>
-                                <option>Dexterity</option>
-                                <option>Wisdom</option>
-                                <option>Intelligence</option>
-                                <option>Charisma</option>
-                                <option>Health</option>
-                                <option>Proficiency</option>
-                            </select>
+                            <input type="number" class="form-control" id="cost" v-model="cost" placeholder="Cost in gp" autocomplete="off" required="true"/>
+                            <span class="input-group-addon">gp</span>
                         </div>
                     </div>
-                    <button class="btn btn-primary">Submit</button>
-                    <button class="btn btn-danger clear-button" type="button" v-on:click="clearFields()">Clear</button>
-                </form>
+                </div>
+                <div class="properties">
+                    <label class="property-label">Properties</label>
+                    <div class="property-holder">
+                        <div class="property-list-items" v-for="(prop, index) in properties" :key="index">
+                            <span class="badge-small badge-pill badge-secondary">{{prop}}</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <button class="btn btn-primary" type="button" v-on:click="addProp()"><b>+</b></button>
+                        <button class="btn btn-danger" type="button" v-on:click="removeProp()"><b>-</b></button>
+                        <input type="text" class="form-control" id="property-input" v-model="newProp" placeholder="Properties" autocomplete="off"/>
+                    </div>
+                </div>
+                <div class="stat-modifiers">
+                    <label class="stat-modifiers-label">Stat Modifiers</label>
+                    <div class="stat-modifiers-holder">
+                        <div class="stat-modifiers-list-items" v-for="(smod, index) in statModifiers" :key="index">
+                            <span class="badge-small badge-pill badge-secondary">{{(smod.value > 0 ? "+" : "") + smod.value + " " + smod.mod}}</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <button class="btn btn-primary " type="button" v-on:click="addStatMod()"><b>+</b></button>
+                        <button class="btn btn-danger" type="button" v-on:click="removeStatMod()"><b>-</b></button>
+                        <input type="number" class="form-control" id="stat-mod-input" v-model="newStatModAmount" placeholder="Stat Modifier" autocomplete="off"/>
+                        <select class="form-control" v-model="newStatModStat">
+                            <option>Strength</option>
+                            <option>Dexterity</option>
+                            <option>Wisdom</option>
+                            <option>Intelligence</option>
+                            <option>Charisma</option>
+                            <option>Health</option>
+                            <option>Proficiency</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-primary" @click="create()">Submit</button>
+                <button class="btn btn-primary" @click="update()" v-if="itemId">Update</button>
+                <button class="btn btn-primary" @click="deleteItem()" v-if="itemId">Delete</button>
+                <button class="btn btn-danger clear-button" type="button" @click="clearFields()">Clear</button>
             </div>
         </div>
 
@@ -103,6 +97,8 @@
 </template>
 
 <script>
+    import { ItemService } from 'services'
+
 export default {
     name: 'dm-armor-creator',
     props: ['armor'],
@@ -121,7 +117,8 @@ export default {
             cost : this.armor.Cost || 0,
             statModifiers: this.armor.statModifiers || [],
             properties: this.armor.Properties || [],
-            stealthAdvantage: this.armor.StealthAdvantage || false
+            stealthAdvantage: this.armor.StealthAdvantage || false,
+            itemId: this.armor.ItemId || ''
         }
     },
     watch: {
@@ -137,6 +134,7 @@ export default {
         this.statModifiers = this.armor.statModifiers;
         this.properties = this.armor.Properties;
         this.stealthAdvantage = this.armor.StealthAdvantage;
+        this.itemId = this.armor.ItemId;
       }
     },
     methods: {
@@ -178,7 +176,7 @@ export default {
                 this.newStatModAmount = 0;
             }
         },
-        async create(){
+        buildPayload(){
             let payload = {};
             let body = {};
             body.ItemClass = 'Armor';
@@ -195,22 +193,44 @@ export default {
             body.StealthAdvantage = this.stealthAdvantage;
 
             payload.body = body;
+        },
+        async create(){
+            let payload = this.buildPayload();
             await this.$store.dispatch('addItem', payload);
             if(this.$store.getters.error){
                 console.log("Encountered an error during item creation : " + this.error);
 
-                $('#success-armor-msg').fadeIn(0);
-                setTimeout(13000, () => {
-                    $('#success-armor-msg').fadeOut(5000);
-                });
+                this.$notify.failure(`Error encountered while creating ${this.name}`);
             }
             else{
+                this.$notify.success(`Successfully created ${this.name}`);
                 this.clearFields();
+            }
+        },
+        async update() {
+            let payload = this.buildPayload();
+            payload.body.ItemId = this.itemId;
+            await this.$store.dispatch('updateInventory', payload);
 
-                $('#success-armor-msg').fadeIn(0);
-                setTimeout(13000, () => {
-                    $('#success-armor-msg').fadeOut(5000);
-                });
+            if(this.$store.getters.error){
+                console.log("Encountered an error during item update : " + this.error);
+
+                this.$notify.failure(`Error encountered while updating ${this.name}`);
+            }
+            else{
+                this.$notify.success(`Successfully updated ${this.name}`);
+                this.clearFields();
+            }
+        },
+        async deleteItem() {
+            let response = {};
+            try{
+                response = await ItemService.deleteItem(this.itemId);
+                this.$notify.success(`Successfully deleted ${this.name}`);
+            }
+            catch(errorResponse){
+                console.log(`Failed to delete ${this.name}. Error: ${errorResponse.bodyText}`);
+                this.$notify.failure(`Failed to delete ${this.name}`);
             }
         },
         clearFields(){

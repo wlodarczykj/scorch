@@ -1,59 +1,53 @@
 <template>
     <div>
-        <div class="alert alert-success success-notification" id='success-adv-gear-msg'>
-            <strong>Success Item Added!</strong>
-        </div>
-        <div class="alert alert-danger failure-notification" id='failure-adv-gear-msg'>
-            <strong>Error creating Item!</strong>
-        </div>
         <div class="dm-adventurer-gear-creator border border-dark">
             <h4> Adventurer Gear </h4>
             <div class="adv-gear-form">
-                <form v-on:submit="create">
-                    <div class="form-group">
-                        <label for="name">Name : </label>
-                        <input type="text" class="form-control" id="name" v-model="name" placeholder="Name" autocomplete="off" required="true"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="description">Description : </label>
-                        <textarea rows="4" class="form-control" id="description" v-model="description" placeholder="Description" autocomplete="off" required="true"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="item-type">Item Type : </label>
-                        <input type="text" class="form-control" id="item-type" v-model="itemType" placeholder="Item Type" autocomplete="off" required="true"/>
-                    </div>
-                    <div class="d-flex">
-                        <div class="form-group numeric-entry">
-                            <label for="weight">Weight : </label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="weight" v-model="weight" placeholder="Weight" autocomplete="off" required="true"/>
-                                <span class="input-group-addon">lbs</span>
-                            </div>
-                        </div>
-                        <div class="form-group numeric-entry">
-                            <label for="cost">Cost : </label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" id="cost" v-model="cost" placeholder="Cost in gp" autocomplete="off" required="true"/>
-                                <span class="input-group-addon">gp</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="properties">
-                        <label class="property-label">Properties</label>
-                        <div class="property-holder">
-                            <div class="property-list-items" v-for="(prop, index) in properties" :key="index">
-                                <span class="badge-small badge-pill badge-secondary">{{prop}}</span>
-                            </div>
-                        </div>
+                <div class="form-group">
+                    <label for="name">Name : </label>
+                    <input type="text" class="form-control" id="name" v-model="name" placeholder="Name" autocomplete="off" required="true"/>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description : </label>
+                    <textarea rows="4" class="form-control" id="description" v-model="description" placeholder="Description" autocomplete="off" required="true"/>
+                </div>
+                <div class="form-group">
+                    <label for="item-type">Item Type : </label>
+                    <input type="text" class="form-control" id="item-type" v-model="itemType" placeholder="Item Type" autocomplete="off" required="true"/>
+                </div>
+                <div class="d-flex">
+                    <div class="form-group numeric-entry">
+                        <label for="weight">Weight : </label>
                         <div class="input-group">
-                            <button class="btn btn-primary add-remove-btn" type="button" v-on:click="addProp()"><b>+</b></button>
-                            <button class="btn btn-danger add-remove-btn" type="button" v-on:click="removeProp()"><b>-</b></button>
-                            <input type="text" class="form-control" id="property-input" v-model="newProp" placeholder="Properties" autocomplete="off"/>
+                            <input type="text" class="form-control" id="weight" v-model="weight" placeholder="Weight" autocomplete="off" required="true"/>
+                            <span class="input-group-addon">lbs</span>
                         </div>
                     </div>
-                    <button class="btn btn-primary">Submit</button>
-                    <button class="btn btn-danger clear-button" type="button" v-on:click="clearFields()">Clear</button>
-                </form>
+                    <div class="form-group numeric-entry">
+                        <label for="cost">Cost : </label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="cost" v-model="cost" placeholder="Cost in gp" autocomplete="off" required="true"/>
+                            <span class="input-group-addon">gp</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="properties">
+                    <label class="property-label">Properties</label>
+                    <div class="property-holder">
+                        <div class="property-list-items" v-for="(prop, index) in properties" :key="index">
+                            <span class="badge-small badge-pill badge-secondary">{{prop}}</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <button class="btn btn-primary add-remove-btn" type="button" v-on:click="addProp()"><b>+</b></button>
+                        <button class="btn btn-danger add-remove-btn" type="button" v-on:click="removeProp()"><b>-</b></button>
+                        <input type="text" class="form-control" id="property-input" v-model="newProp" placeholder="Properties" autocomplete="off"/>
+                    </div>
+                </div>
+                <button class="btn btn-primary" @click="create()">Submit</button>
+                <button class="btn btn-primary" @click="update()" v-if="itemId">Update</button>
+                <button class="btn btn-primary" @click="deleteItem()" v-if="itemId">Delete</button>
+                <button class="btn btn-danger clear-button" type="button" @click="clearFields()">Clear</button>
             </div>
         </div>
 
@@ -61,6 +55,8 @@
 </template>
 
 <script>
+    import { ItemService } from 'services'
+
 export default {
     name: 'dm-adventurer-gear-creator',
     props: ['gear'],
@@ -72,7 +68,8 @@ export default {
             name : this.gear.Name || '',
             weight : this.gear.Weight || 0,
             cost : this.gear.Cost || 0,
-            properties: this.gear.Properties || []
+            properties: this.gear.Properties || [],
+            itemId: this.gear.ItemId || ''
         }
     },
     watch: {
@@ -83,6 +80,7 @@ export default {
         this.weight = this.gear.Weight;
         this.cost = this.gear.Cost;
         this.properties = this.gear.Properties;
+        this.itemId = this.gear.ItemId;
       }
     },
     methods: {
@@ -102,7 +100,7 @@ export default {
                 this.properties.pop();
             }
         },
-        async create(){
+        buildPayload(){
             let payload = {};
             let body = {};
             body.ItemClass = 'AdventurerGear';
@@ -115,24 +113,45 @@ export default {
             body.Name = this.name;
 
             payload.body = body;
+        },
+        async create(){
+            let payload = buildPayload();
             await this.$store.dispatch('addItem', payload);
             if(this.$store.getters.error){
                 console.log("Encountered an error during item creation : " + this.error);
 
-                $('#failure-adv-gear-msg').fadeIn(0);
-                setTimeout(13000, () => {
-                    $('#failure-adv-gear-msg').fadeOut(5000);
-                });
+                this.$notify.failure(`Error encountered while creating ${this.name}`);
             }
             else{
+                this.$notify.success(`Successfully created ${this.name}`);
                 this.clearFields();
-
-                $('#success-adv-gear-msg').fadeIn(0);
-                setTimeout(13000, () => {
-                    $('#success-adv-gear-msg').fadeOut(5000);
-                });
             }
+        },
+        async update() {
+            let payload = this.buildPayload();
+            payload.body.ItemId = this.itemId;
+            await this.$store.dispatch('updateInventory', payload);
 
+            if(this.$store.getters.error){
+                console.log("Encountered an error during item update : " + this.error);
+
+                this.$notify.failure(`Error encountered while updating ${this.name}`);
+            }
+            else{
+                this.$notify.success(`Successfully updated ${this.name}`);
+                this.clearFields();
+            }
+        },
+        async deleteItem() {
+            let response = {};
+            try{
+                response = await ItemService.deleteItem(this.itemId);
+                this.$notify.success(`Successfully deleted ${this.name}`);
+            }
+            catch(errorResponse){
+                console.log(`Failed to delete ${this.name}. Error: ${errorResponse.bodyText}`);
+                this.$notify.failure(`Failed to delete ${this.name}`);
+            }
         },
         clearFields(){
             this.name = '';

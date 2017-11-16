@@ -1,6 +1,6 @@
 <template>
 <div class="character-tile list-group">
-  <a class="list-group-item list-group-item-action flex-column align-items-start">
+  <a class="ttttt list-group-item list-group-item-action flex-column align-items-start">
     <div class="d-flex flex-row w-100 justify-content-between">
         <div class="d-flex flex-column icon align-items-center">
             <h5 class="level">Lv. {{ this.character.Level }}</h5>
@@ -50,7 +50,8 @@ export default {
 .character-tile {
     flex: 1 0;
     box-sizing:border-box;
-    -webkit-box-sizing: border-box
+    -webkit-box-sizing: border-box;
+    color: white;
 }
 
 .router-link-active {
@@ -69,6 +70,10 @@ img {
 
 .character-stats {
     flex: auto;
+}
+
+.ttttt {
+    background-color: #393C40;    
 }
 
 .icon {

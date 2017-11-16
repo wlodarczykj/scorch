@@ -24,7 +24,7 @@
                     <input type="number" class="form-control" id="modify-gold" v-model="deltaGold" placeholder="Gold Change" autocomplete="off"/>
                 </div>
             </div>
-            <button class="btn btn-warning" @click="apply">Submit</button>
+            <button class="btn btn-primary" @click="apply">Submit</button>
         </form>
     </div>
 </template>
@@ -95,9 +95,7 @@ export default {
         flex: 1;
         margin-right: 1%;
     }
-    input{
-        background-color: #E8E8E8;
-    }
+
     .tempHp{
         margin-left: 2%;
     }

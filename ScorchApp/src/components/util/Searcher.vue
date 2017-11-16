@@ -181,7 +181,7 @@ export default {
         border: black;
     }
     .activated {
-        background-color: orange;
+        background-color: #A1AF80;
     }
     a{
         background-color: #E8E8E8;

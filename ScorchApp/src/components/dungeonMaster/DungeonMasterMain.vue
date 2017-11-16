@@ -17,7 +17,7 @@
                                 <span class="item-qty-label">Quantity </span>
                                 <div class="input-group">
                                     <input type="number" class="form-control" id="item-quantity" v-model="itemQty" placeholder="# Items" autocomplete="off"/>
-                                    <button class="btn btn-warning" type="button" v-on:click="giveItem()">Give Item</button>
+                                    <button class="btn btn-primary" type="button" v-on:click="giveItem()">Give Item</button>
                                 </div>
                             </div>
                         </div>
@@ -157,9 +157,6 @@ export default {
         flex-grow: 4;
         border-radius: 9px;
         margin-top: 1%;
-        input{
-            background-color: #E8E8E8;
-        }
     }
     .rhs-character-ops{
         flex: 2;
